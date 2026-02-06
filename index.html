@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Will You Be My Valentine? ❤️</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.25), transparent 60%),
+                  linear-gradient(135deg, #ff758c, #ff7eb3);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    /* Moonlight shimmer */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 70% 20%, rgba(255,255,255,0.25), transparent 40%);
+      animation: moonGlow 6s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes moonGlow {
+      0%,100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+    }
+
+    .card {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(14px);
+      padding: 40px 30px;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      max-width: 420px;
+      width: 90%;
+      animation: fadeIn 1.2s ease;
+      z-index: 2;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 { font-size: 2.2rem; margin-bottom: 10px; }
+
+    .typing {
+      font-size: 1.2rem;
+      min-height: 1.5em;
+      margin-bottom: 20px;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid rgba(255,255,255,0.8);
+      width: 0;
+      animation: typing 4s steps(30, end) forwards, blink 0.8s infinite;
+    }
+    @keyframes typing { to { width: 100%; } }
+    @keyframes blink { 50% { border-color: transparent; } }
+
+    .names {
+      font-size: 1.6rem;
+      margin: 24px 0 10px;
+      opacity: 0;
+      animation: reveal 2s ease forwards, glow 3s ease-in-out infinite, heartbeat 2s ease-in-out infinite;
+      animation-delay: 4.2s;
+      letter-spacing: 2px;
+      text-shadow: 0 0 12px rgba(255,255,255,0.8);
+    }
+    @keyframes reveal { to { opacity: 1; letter-spacing: 3px; } }
+    @keyframes glow {
+      0%,100% { text-shadow: 0 0 10px rgba(255,255,255,0.5), 0 0 20px rgba(255,120,160,0.6); }
+      50% { text-shadow: 0 0 20px rgba(255,255,255,1), 0 0 40px rgba(255,80,130,0.9); }
+    }
+    @keyframes heartbeat {
+      0%,100% { transform: scale(1); }
+      25% { transform: scale(1.05); }
+      75% { transform: scale(1.1); }
+    }
+
+    .countdown { margin: 20px 0; font-size: 1.1rem; }
+
+    .buttons { display: flex; gap: 16px; justify-content: center; margin-top: 20px; }
+    button {
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    #yesBtn { background: #ff2f68; color: #fff; }
+    #yesBtn:hover { transform: scale(1.1); }
+    #noBtn { background: #fff; color: #ff2f68; }
+
+    .hidden { display: none; }
+
+    .sad { margin-top: 20px; animation: shake 0.4s; }
+    @keyframes shake {
+      0%,100%{transform:translateX(0)}
+      25%{transform:translateX(-5px)}
+      75%{transform:translateX(5px)}
+    }
+
+    /* Floating sparkles */
+    .petals {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .petal {
+      position: absolute;
+      color: rgba(255,180,200,0.9);
+      animation: petalFall 7s linear forwards;
+    }
+    @keyframes petalFall {
+      to { transform: translateY(120vh) rotate(360deg); opacity: 0; }
+    }
+    }
+
+    .hearts { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+    .heart { position: absolute; bottom: -20px; animation: floatUp 5s linear forwards; }
+    @keyframes floatUp { to { transform: translateY(-110vh); opacity: 0; } }
+  </style>
+</head>
+<body>
+
+  <!-- Nepali instrumental background music -->
+  <audio id="bgMusic" autoplay loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9a5a1d3d42.mp3?filename=nepali-flute-ambient-110997.mp3" type="audio/mpeg">
+  </audio>
+
+  <button id="musicToggle" style="position:fixed;top:16px;right:16px;z-index:3;border:none;border-radius:999px;padding:10px 14px;background:rgba(255,255,255,0.2);color:#fff;cursor:pointer;backdrop-filter:blur(8px);">🔊</button>
+
+  <div class="card" id="mainCard">
+    <div class="typing">I’ve liked you for 716 days…</div>
+
+    <div class="names">💖 Jasmin ko Maan ko rajkumar 💖</div>
+
+    <div class="countdown" id="countdown"></div>
+    <p style="margin-top:6px; font-size:1rem; opacity:0.9;">तिमी बिना भ्यालेन्टाइन अधुरो छ ❤️</p>
+
+    <h1>Will you be my Valentine? ❤️</h1>
+
+    <div class="buttons">
+      <button id="yesBtn">YES 💕</button>
+      <button id="noBtn">No 💔</button>
+    </div>
+
+    <div class="sad hidden" id="sadMsg">
+      <p>Are you sure? 😢</p>
+      <img id="sadGif" style="width:100%; border-radius:16px; margin-top:12px;" />
+    </div>
+  </div>
+
+  <div class="card hidden" id="yesCard">
+    <h1>YOU SAID YES 🥰</h1>
+    <p>अब हरेक भ्यालेन्टाइन तिमी सँगै ❤️<br/>मायाले भरिएको हाम्रो कथा सुरु भयो 💕</p>
+  </div>
+
+  <div class="petals" id="petals"></div>
+  <div class="hearts" id="hearts"></div>
+
+  <script>
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const mainCard = document.getElementById('mainCard');
+    const yesCard = document.getElementById('yesCard');
+    const sadMsg = document.getElementById('sadMsg');
+    const hearts = document.getElementById('hearts');
+    const petals = document.getElementById('petals');
+
+    const sadGifs = [
+      'https://media.giphy.com/media/ROF8OQvDmxytW/giphy.gif',
+      'https://media.giphy.com/media/OPU6wzx8JrHna/giphy.gif',
+      'https://media.giphy.com/media/ISOckXUybVfQ4/giphy.gif',
+      'https://media.giphy.com/media/9Y5BbDSkSTiY8/giphy.gif'
+    ];
+
+    let noCount = 0;
+
+    yesBtn.onclick = () => {
+      mainCard.classList.add('hidden');
+      yesCard.classList.remove('hidden');
+      startHearts();
+      startFireworks();
+    };
+
+    noBtn.onclick = () => {
+      sadMsg.classList.remove('hidden');
+      document.getElementById('sadGif').src = sadGifs[noCount % sadGifs.length];
+      noCount++;
+    };
+
+    function startHearts() {
+      setInterval(() => {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.textContent = '❤️';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.fontSize = Math.random() * 24 + 16 + 'px';
+        hearts.appendChild(heart);
+        setTimeout(() => heart.remove(), 5000);
+      }, 250);
+    }
+
+    function spawnPetal() {
+      const p = document.createElement('div');
+      p.className = 'petal';
+      p.textContent = '🌹';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.top = '-10px';
+      p.style.fontSize = Math.random() * 18 + 14 + 'px';
+      petals.appendChild(p);
+      setTimeout(() => p.remove(), 7000);
+    } {
+      const s = document.createElement('div');
+      s.className = 'sparkleDot';
+      s.textContent = '✨';
+      s.style.left = Math.random() * 100 + 'vw';
+      s.style.bottom = '-10px';
+      s.style.fontSize = Math.random() * 16 + 10 + 'px';
+      sparkles.appendChild(s);
+      setTimeout(() => s.remove(), 6000);
+    }
+    setInterval(spawnPetal, 450);
+
+    function updateCountdown() {
+      const target = new Date('February 14, 2026 00:00:00').getTime();
+      const now = new Date().getTime();
+      const diff = target - now;
+
+      if (diff <= 0) {
+        document.getElementById('countdown').textContent = 'It’s Valentine’s Day ❤️';
+        return;
+      }
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      document.getElementById('countdown').textContent = `⏳ Countdown to Feb 14: ${days}d ${hours}h ${minutes}m`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 60000);
+
+    // Music toggle
+    const music = document.getElementById('bgMusic');
+    const toggle = document.getElementById('musicToggle');
+    toggle.onclick = () => {
+      if (music.paused) {
+        music.play();
+        toggle.textContent = '🔊';
+      } else {
+        music.pause();
+        toggle.textContent = '🔈';
+      }
+    };
+
+    // Fireworks finale
+    function startFireworks() {
+      for (let i = 0; i < 40; i++) {
+        const f = document.createElement('div');
+        f.textContent = '🎆';
+        f.style.position = 'fixed';
+        f.style.left = Math.random() * 100 + 'vw';
+        f.style.top = Math.random() * 100 + 'vh';
+        f.style.fontSize = Math.random() * 24 + 20 + 'px';
+        f.style.animation = 'fadeIn 1.5s ease';
+        document.body.appendChild(f);
+        setTimeout(() => f.remove(), 2000);
+      }
+    }
+  </script>
+</body>
+</html>
